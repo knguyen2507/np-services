@@ -10,7 +10,7 @@ prisma generate
 
 ## Chạy chương trình trên Local
 
-Chạy file docker-compose.yml trong thư mục script/store-docker để tạo Docker Images
+Chạy file docker-compose.yml tạo Docker Images
 
 ```
 docker compose up -d
@@ -40,6 +40,12 @@ Build docker image
 
 ```
 pnpm docker:build
+```
+
+Build docker container
+
+```
+pnpm docker:start
 ```
 
 ## Localhost

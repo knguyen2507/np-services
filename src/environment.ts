@@ -18,9 +18,6 @@ class EnvironmentVariables {
   @IsString()
   readonly DATABASE_URL: string = process.env['DATABASE_URL'] as string;
 
-  @IsString()
-  readonly MONGODB_URL: string = process.env['MONGODB_URL'] as string;
-
   @IsEnum(Environment)
   readonly NODE_ENV: Environment = process.env['NODE_ENV'] as Environment;
 
@@ -59,9 +56,6 @@ class EnvironmentVariables {
 
   @IsString()
   readonly CLOUDINARY_APISECRET: string = process.env['CLOUDINARY_APISECRET'] as string;
-
-  @IsString()
-  readonly RMQ_URL: string = process.env['RMQ_URL'] as string;
 
   constructor() {
     const error = validateSync(this);

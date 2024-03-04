@@ -1,0 +1,42 @@
+version: '3.9'
+
+networks:
+  gateway-network:
+    external: true
+
+volumes:
+  mongodb-data:
+  redis-data:
+
+services:
+  store-mongodb:
+    image: 'bitnami/mongodb:6.0.4-debian-11-r11'
+    container_name: store-mongodb
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb-data:/bitnami/mongodb
+    environment:
+      - TZ=Asia/Ho_Chi_Minh
+      - MONGODB_ADVERTISED_HOSTNAME=store-mongodb
+      - MONGODB_PORT_NUMBER=27017
+      - MONGODB_REPLICA_SET_MODE=primary
+      - MONGODB_REPLICA_SET_NAME=rs0
+      - MONGODB_ROOT_PASSWORD=abc12345
+      - MONGODB_REPLICA_SET_KEY=replicasetkey123
+    networks:
+      - gateway-network
+
+  store-redis:
+    image: redis:7.0.12
+    restart: always
+    container_name: store-redis
+    ports:
+      - 6379:6379
+    command: redis-server --save 20 1 --loglevel warning --requirepass abc12345
+    volumes:
+      - redis-data:/data
+    environment:
+      - TZ=Asia/Ho_Chi_Minh
+    networks:
+      - gateway-network

@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: np-k8s
+  name: np-services
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 3000
+      targetPort: 3000
+  selector:
+    app: np-services
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: np-k8s
+  name: np-services-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: np-services
+  template:
+    metadata:
+      labels:
+        app: np-services
+    spec:
+      imagePullSecrets:
+        - name: registry-secret
+      containers:
+        - name: np-services
+          image: knguyen2507/np-services:latest
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - secretRef:
+                name: np-secret
