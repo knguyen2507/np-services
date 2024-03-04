@@ -1,0 +1,114 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  phone    String
+  username String
+  password String
+  created  DateTime
+
+  @@map("users")
+}
+
+model Shops {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  address     String
+  description String
+
+  @@map("shops")
+}
+
+model Brands {
+  id            String     @id @default(auto()) @map("_id") @db.ObjectId
+  brandCode     String     @unique
+  name          String
+  thumbnailLink String
+  created       PIC?
+  updated       PIC[]
+  product       Products[]
+
+  @@map("brands")
+}
+
+model Categories {
+  id            String     @id @default(auto()) @map("_id") @db.ObjectId
+  categoryCode  String     @unique
+  name          String
+  thumbnailLink String
+  created       PIC?
+  updated       PIC[]
+  product       Products[]
+
+  @@map("categories")
+}
+
+model Products {
+  id            String     @id @default(auto()) @map("_id") @db.ObjectId
+  productCode   String     @unique
+  name          String
+  category      Categories @relation(fields: [categoryId], references: [id])
+  categoryId    String     @db.ObjectId
+  brand         Brands     @relation(fields: [brandId], references: [id])
+  brandId       String     @db.ObjectId
+  qty           Int
+  purchase      Int
+  price         Int
+  thumbnailLink Images
+  description   String
+  images        Images[]
+  created       PIC?
+  updated       PIC[]
+
+  @@map("products")
+}
+
+type Images {
+  id     String  @db.ObjectId
+  name   String
+  url    String
+  isMain Boolean
+}
+
+type PIC {
+  id       String
+  username String
+  at       DateTime
+}
+
+model Logs {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  messageId String
+  level     LogLevel
+  timeStamp DateTime
+  eventName String
+  message   String
+  data      Json
+
+  @@map("logs")
+}
+
+enum StatusEnum {
+  ACTIVE   @map("ACTIVE")
+  INACTIVE @map("INACTIVE")
+}
+
+enum ActionEnum {
+  CREATE @map("CREATE")
+  READ   @map("READ")
+  UPDATE @map("UPDATE")
+  DELETE @map("DELETE")
+}
+
+enum LogLevel {
+  LOG   @map("LOG")
+  ERROR @map("ERROR")
+}
