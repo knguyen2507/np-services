@@ -130,3 +130,11 @@ export const pathPrefixQueryBrand = {
 export const pathPrefixCommandBrand = {
   createBrand: 'create',
 };
+
+// --------------------------------------------
+// Time
+export const pathPrefixTime = {
+  swagger: 'time',
+  controller: 'time',
+  getTimeServer: 'server',
+};

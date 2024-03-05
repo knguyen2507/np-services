@@ -1,6 +1,7 @@
 import { CanActivate, ExecutionContext, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { LogLevel } from '@prisma/client';
 import { Request } from 'express';
+import { TIME_REQUIREMENT } from 'libs/utility/const/constant';
 import { UtilityImplement } from 'libs/utility/utility.module';
 import moment = require('moment');
 
@@ -10,6 +11,13 @@ export class AuthnGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
+    if (!request.headers['x-custom-timestamp'] || !request.headers['x-custom-nonce']) {
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
+    }
+    await this.checkReplayApi(request.headers['x-custom-timestamp'], request.headers['x-custom-nonce']);
+
+    await this.util.setNonce(request.headers['x-custom-nonce']);
+
     const token = this.extractTokenFromHeader(request);
     if (!token) {
       throw new HttpException('Authentication Required', HttpStatus.UNAUTHORIZED);
@@ -38,5 +46,14 @@ export class AuthnGuard implements CanActivate {
   private extractTokenFromHeader(request: Request): string | undefined {
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
     return type === 'Bearer' ? token : undefined;
+  }
+
+  private async checkReplayApi(timeStamp: number, nonce: string): Promise<void> {
+    if (moment().unix() - timeStamp > TIME_REQUIREMENT) {
+      throw new HttpException('Expired', HttpStatus.UNAUTHORIZED);
+    }
+    if (await this.util.getRedisKey(nonce)) {
+      throw new HttpException('Expired', HttpStatus.UNAUTHORIZED);
+    }
   }
 }

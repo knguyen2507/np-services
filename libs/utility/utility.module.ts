@@ -85,6 +85,10 @@ export class UtilityImplement {
     } as any);
   }
 
+  async setNonce(key: string) {
+    await this.redis.set(key, 'nonce', { ttl: 3600 } as any);
+  }
+
   async setRedisTransactions(key: string): Promise<string | undefined> {
     return await this.redis.get(key);
   }

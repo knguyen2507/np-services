@@ -5,6 +5,7 @@ import { GuardModule } from 'libs/guard/guard.module';
 import { PrismaModule } from 'libs/prisma/prisma.module';
 import { RedisModule } from 'libs/redis/redis.module';
 import { UtilityModule } from 'libs/utility/utility.module';
+import { AppController } from './app.controller';
 import { BrandModule } from './brand/brand.module';
 import { CategoryModule } from './category/category.module';
 import { ProductModule } from './product/product.module';
@@ -23,7 +24,7 @@ import { UserModule } from './user/user.module';
     CategoryModule,
     ProductModule,
   ],
-  controllers: [],
+  controllers: [AppController],
   providers: [],
 })
 export class AppModule {}
