@@ -1,16 +1,16 @@
-import { Body, Controller, Post, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
+import { AuthnGuard } from 'libs/guard/authentication/authn.guard';
 import { pathPrefixBrand, pathPrefixCommandBrand } from 'libs/utility/const/path.prefix';
 import { CreateBrandResquestDTO } from 'libs/utility/dto';
 import { RequestWithUser } from 'libs/utility/interface/request.interface';
-import { FileUpload } from 'libs/utility/type';
 import { UtilityImplement } from 'libs/utility/utility.module';
 import { CreateBrand } from '../application/command/brand/create';
 
 @ApiTags(pathPrefixBrand.swagger)
 @Controller(pathPrefixBrand.controller)
+@UseGuards(AuthnGuard)
 export class BrandCommandController {
   constructor(
     private readonly util: UtilityImplement,
@@ -18,18 +18,12 @@ export class BrandCommandController {
   ) {}
 
   @Post(pathPrefixCommandBrand.createBrand)
-  @UseInterceptors(FileInterceptor('image'))
-  @ApiConsumes('multipart/form-data')
-  async CreateBrand(
-    @UploadedFile() image: FileUpload,
-    @Body() body: CreateBrandResquestDTO,
-    @Req() request: RequestWithUser,
-  ): Promise<any> {
+  async CreateBrand(@Body() body: CreateBrandResquestDTO, @Req() request: RequestWithUser): Promise<any> {
     const msg = {
       messageId: this.util.generateId(),
       data: {
         name: body.name,
-        thumbnailLink: image,
+        thumbnailLink: body.thumbnailLink,
         brandCode: body.brandCode,
         user: request.user,
       },

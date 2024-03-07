@@ -15,4 +15,9 @@ export class CreateCategoryResquestDTO {
   @IsString()
   @IsNotEmpty()
   readonly categoryCode!: string;
+
+  @ApiProperty({ type: String, example: 'test-category-1' })
+  @IsString()
+  @IsNotEmpty()
+  readonly thumbnailLink!: string;
 }
