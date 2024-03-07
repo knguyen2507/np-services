@@ -5,7 +5,6 @@ import { UserInterface } from 'libs/utility/interface/user.interface';
 import { UtilityImplement } from 'libs/utility/utility.module';
 import { FindUserById } from '../../../application/query/user/detail';
 import { FindUserByIdResult } from '../../../application/query/user/detail/result';
-import { FindUser } from '../../../application/query/user/find';
 import { FindUserResult, FindUserResultItem } from '../../../application/query/user/find/result';
 import { GetTotalUserResult } from '../../../application/query/user/get-total/result';
 import { GetUserInfo } from '../../../application/query/user/get-user-info';
@@ -19,25 +18,9 @@ export class UserQueryImplement implements UserQuery {
   @Inject()
   private readonly util: UtilityImplement;
 
-  async find(query: FindUser): Promise<FindUserResult> {
-    const { offset, limit, searchModel } = query.data;
-    const conditions = [];
-    const search: { [key: string]: any } = searchModel ? JSON.parse(searchModel) : undefined;
-
-    if (search) {
-      for (const [prop, item] of Object.entries(search)) {
-        const obj = {};
-        const { value } = this.util.buildSearch(item);
-        obj[prop] = value;
-        conditions.push(obj);
-      }
-    }
-
+  async find(): Promise<FindUserResult> {
     const [users, total] = await Promise.all([
       this.prisma.users.findMany({
-        skip: Number(offset),
-        take: Number(limit),
-        where: { AND: conditions },
         orderBy: [
           {
             created: 'desc',

@@ -1,9 +1,8 @@
-import { Controller, Get, Query, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthnGuard } from 'libs/guard/authentication/authn.guard';
 import { pathPrefixQueryUser, pathPrefixUser } from 'libs/utility/const/path.prefix';
-import { FindUserRequestDTO } from 'libs/utility/dto';
 import { RequestWithUser } from 'libs/utility/interface/request.interface';
 import { UtilityImplement } from 'libs/utility/utility.module';
 import { FindUserById } from '../../application/query/user/detail';
@@ -28,10 +27,10 @@ export class UserQueryController {
   ) {}
 
   @Get(pathPrefixQueryUser.findUsers)
-  async FindUsers(@Query() query: FindUserRequestDTO): Promise<FindUserResult> {
+  async FindUsers(): Promise<FindUserResult> {
     const msg = {
       messageId: this.util.generateId(),
-      data: query,
+      data: null,
     };
     const user = new FindUser(msg);
     return await this.queryBus.execute(user);

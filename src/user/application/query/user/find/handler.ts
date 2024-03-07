@@ -5,13 +5,12 @@ import { UserQueryImplement } from '../../../../infrastructure/query/user';
 import { FindUserResult } from './result';
 
 @QueryHandler(FindUser)
-export class FindUserHandler
-  implements IQueryHandler<FindUser, FindUserResult>
-{
+export class FindUserHandler implements IQueryHandler<FindUser, FindUserResult> {
   @Inject()
   private readonly user: UserQueryImplement;
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async execute(query: FindUser): Promise<FindUserResult> {
-    return await this.user.find(query);
+    return await this.user.find();
   }
 }

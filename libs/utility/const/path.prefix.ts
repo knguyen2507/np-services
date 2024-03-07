@@ -36,7 +36,7 @@ export const pathPrefixQueryUser = {
 };
 
 export const pathPrefixCommandUser = {
-  createUser: 'create-user',
+  createUser: 'create',
   login: 'login',
   updatePassword: 'change-password',
   logout: 'logout',
