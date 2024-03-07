@@ -14,6 +14,10 @@ export class FindProductByIdResult implements IQueryResult {
   @Expose()
   readonly brand: string;
   @Expose()
+  readonly qty: number;
+  @Expose()
+  readonly purchase: number;
+  @Expose()
   readonly price: number;
   @Expose()
   readonly description: string;

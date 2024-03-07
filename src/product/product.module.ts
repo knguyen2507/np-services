@@ -5,6 +5,7 @@ import { PrismaModule } from 'libs/prisma/prisma.module';
 import { RedisModule } from 'libs/redis/redis.module';
 import { CreateProductHandler } from './application/command/product/create/handler';
 import { DeleteProductHandler } from './application/command/product/delete/handler';
+import { UpdateProductHandler } from './application/command/product/update/handler';
 import { FindProductByCodeHandler } from './application/query/product/detail/handler';
 import { FindProductByAdminHandler } from './application/query/product/find-by-admin/handler';
 import { FindProductByBrandHandler } from './application/query/product/find-by-brand/handler';
@@ -22,7 +23,7 @@ import { ProductQueryController } from './presentation/query.controller';
 
 const infrastructure = [ProductQueryImplement, ProductRepositoryImplement];
 
-const commands = [CreateProductHandler, DeleteProductHandler];
+const commands = [CreateProductHandler, UpdateProductHandler, DeleteProductHandler];
 
 const queries = [
   FindProductByCodeHandler,

@@ -42,7 +42,11 @@ export class ProductModel {
   updated: PIC[];
 
   update(data: Partial<this>) {
+    this.name = data.name ? data.name : this.name;
     this.qty = data.qty ? data.qty : this.qty;
     this.price = data.price ? data.price : this.price;
+    this.description = data.description ? data.description : this.description;
+    this.thumbnailLink = data.thumbnailLink ? data.thumbnailLink : this.thumbnailLink;
+    this.images = data.images ? data.images : this.images;
   }
 }

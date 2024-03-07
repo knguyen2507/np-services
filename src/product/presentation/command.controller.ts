@@ -10,6 +10,7 @@ import { FileUpload } from 'libs/utility/type';
 import { UtilityImplement } from 'libs/utility/utility.module';
 import { CreateProduct } from '../application/command/product/create';
 import { DeleteProduct } from '../application/command/product/delete';
+import { UpdateProduct } from '../application/command/product/update';
 
 @ApiTags(pathPrefixProduct.swagger)
 @Controller(pathPrefixProduct.controller)
@@ -55,6 +56,42 @@ export class ProductCommandController {
       },
     };
     const command = new CreateProduct(msg);
+    return await this.commandBus.execute(command);
+  }
+
+  @Post(pathPrefixCommandProduct.updateProduct)
+  @UseInterceptors(AnyFilesInterceptor())
+  @ApiConsumes('multipart/form-data')
+  async UpdateProduct(
+    @UploadedFiles() images: Array<FileUpload>,
+    @Body() body: any,
+    @Req() request: RequestWithUser,
+  ): Promise<any> {
+    const data = {} as any;
+    for (const i in body) {
+      if (i !== 'data') {
+        if (body[i] !== 'undefined') {
+          data[i] = JSON.parse(body[i]);
+        }
+      }
+    }
+
+    const msg = {
+      messageId: this.util.generateId(),
+      data: {
+        id: data.id,
+        name: data.name,
+        qty: Number(data.qty),
+        price: Number(data.price),
+        description: data.description,
+        main: data.mainImage,
+        mainId: data.mainId,
+        files: images,
+        oldImage: data.oldImage,
+        user: request.user,
+      },
+    };
+    const command = new UpdateProduct(msg);
     return await this.commandBus.execute(command);
   }
 

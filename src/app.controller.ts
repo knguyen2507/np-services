@@ -4,7 +4,7 @@ import { pathPrefixTime } from 'libs/utility/const/path.prefix';
 import moment from 'moment';
 
 @ApiTags(pathPrefixTime.swagger)
-@Controller(pathPrefixTime.controller)
+@Controller()
 @ApiBearerAuth()
 export class AppController {
   @Get(pathPrefixTime.getTimeServer)

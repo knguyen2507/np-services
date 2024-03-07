@@ -92,6 +92,7 @@ export const pathPrefixQueryProduct = {
 
 export const pathPrefixCommandProduct = {
   createProduct: 'create',
+  updateProduct: 'update',
   deleteProduct: 'delete',
 };
 
@@ -135,6 +136,5 @@ export const pathPrefixCommandBrand = {
 // Time
 export const pathPrefixTime = {
   swagger: 'time',
-  controller: 'time',
-  getTimeServer: 'server',
+  getTimeServer: 'server/time',
 };
