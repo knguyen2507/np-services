@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Inject } from '@nestjs/common';
 import { plainToClass, plainToInstance } from 'class-transformer';
-import { PrismaService } from 'libs/prisma/prisma.service';
-import { UserInterface } from 'libs/utility/interface/user.interface';
-import { UtilityImplement } from 'libs/utility/utility.module';
+import { PrismaService } from '../../../../../libs/prisma/prisma.service';
+import { UserInterface } from '../../../../../libs/utility/interface/user.interface';
+import { UtilityImplement } from '../../../../../libs/utility/utility.module';
 import { FindUserById } from '../../../application/query/user/detail';
 import { FindUserByIdResult } from '../../../application/query/user/detail/result';
 import { FindUserResult, FindUserResultItem } from '../../../application/query/user/find/result';

@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { v2 as cloudinary } from 'cloudinary';
-import { FileUpload } from 'libs/utility/type';
 import { Readable } from 'stream';
+import { FileUpload } from '../utility/type';
 import { CloudinaryResponse } from './cloudinary.response';
 
 @Injectable()

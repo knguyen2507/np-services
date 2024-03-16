@@ -1,8 +1,8 @@
 import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UtilityImplement } from 'libs/utility/utility.module';
 import moment from 'moment';
 import { CreateUser } from '.';
+import { UtilityImplement } from '../../../../../../libs/utility/utility.module';
 import { UserFactory } from '../../../../infrastructure/factory/user';
 import { UserRepositoryImplement } from '../../../../infrastructure/repository/user';
 

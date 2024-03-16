@@ -1,4 +1,4 @@
-import { UserResult } from 'libs/utility/result/user.result';
+import { UserResult } from '../../../../../libs/utility/result/user.result';
 import { UserModel } from '../../model/users';
 
 export interface UserRepository {

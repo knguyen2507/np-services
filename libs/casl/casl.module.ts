@@ -1,5 +1,5 @@
 import { Inject, Module, OnModuleInit } from '@nestjs/common';
-import { PrismaModule } from 'libs/prisma/prisma.module';
+import { PrismaModule } from '../prisma/prisma.module';
 import { SeedAuthnService } from './seed/seed.authn.service';
 import { SeedProductService } from './seed/seed.product.service';
 import { SeedShopService } from './seed/seed.shop.services';

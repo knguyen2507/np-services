@@ -5,9 +5,7 @@ import { UserQueryImplement } from '../../../../infrastructure/query/user';
 import { GetTotalUserResult } from './result';
 
 @QueryHandler(GetTotalUser)
-export class GetTotalUserHandler
-  implements IQueryHandler<GetTotalUser, GetTotalUserResult>
-{
+export class GetTotalUserHandler implements IQueryHandler<GetTotalUser, GetTotalUserResult> {
   @Inject()
   private readonly user: UserQueryImplement;
 

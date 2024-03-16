@@ -1,6 +1,6 @@
 import { Inject } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
-import { PrismaService } from 'libs/prisma/prisma.service';
+import { PrismaService } from '../../../../../libs/prisma/prisma.service';
 import { FindShop } from '../../../application/query/shop/find';
 import { FindShopResult } from '../../../application/query/shop/find/result';
 import { ShopQuery } from '../../../domain/query/shop';

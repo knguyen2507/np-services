@@ -1,9 +1,9 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { LogLevel } from '@prisma/client';
-import { UtilityImplement } from 'libs/utility/utility.module';
 import moment from 'moment';
 import { Logout } from '.';
+import { UtilityImplement } from '../../../../../../libs/utility/utility.module';
 
 @CommandHandler(Logout)
 export class LogoutHandler implements ICommandHandler<Logout, any> {

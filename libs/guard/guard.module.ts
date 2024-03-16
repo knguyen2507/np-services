@@ -1,5 +1,5 @@
 import { Global, Module } from '@nestjs/common';
-import { UtilityModule } from 'libs/utility/utility.module';
+import { UtilityModule } from '../utility/utility.module';
 
 @Global()
 @Module({

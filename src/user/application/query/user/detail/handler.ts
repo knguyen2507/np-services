@@ -5,9 +5,7 @@ import { UserQueryImplement } from '../../../../infrastructure/query/user';
 import { FindUserByIdResult } from './result';
 
 @QueryHandler(FindUserById)
-export class FindUserByIdHandler
-  implements IQueryHandler<FindUserById, FindUserByIdResult>
-{
+export class FindUserByIdHandler implements IQueryHandler<FindUserById, FindUserByIdResult> {
   @Inject()
   private readonly user: UserQueryImplement;
 

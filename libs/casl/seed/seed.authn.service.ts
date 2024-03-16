@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { PrismaService } from 'libs/prisma/prisma.service';
-import { InitialShop, InitialUser1, InitialUser2 } from 'libs/utility/const/initial';
+import { PrismaService } from '../../prisma/prisma.service';
+import { InitialShop, InitialUser1, InitialUser2 } from '../../utility/const/initial';
 
 @Injectable()
 export class SeedAuthnService {

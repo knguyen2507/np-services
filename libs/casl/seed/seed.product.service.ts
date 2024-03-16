@@ -1,9 +1,9 @@
 import { faker } from '@faker-js/faker';
 import { Inject, Injectable } from '@nestjs/common';
 import { ObjectId } from 'bson';
-import { PrismaService } from 'libs/prisma/prisma.service';
-import { InitialUser1 } from 'libs/utility/const/initial';
 import moment from 'moment';
+import { PrismaService } from '../../prisma/prisma.service';
+import { InitialUser1 } from '../../utility/const/initial';
 
 @Injectable()
 export class SeedProductService {

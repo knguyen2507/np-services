@@ -1,8 +1,8 @@
 import { CanActivate, ExecutionContext, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { LogLevel } from '@prisma/client';
 import { Request } from 'express';
-import { TIME_REQUIREMENT } from 'libs/utility/const/constant';
-import { UtilityImplement } from 'libs/utility/utility.module';
+import { TIME_REQUIREMENT } from '../../utility/const/constant';
+import { UtilityImplement } from '../../utility/utility.module';
 import moment = require('moment');
 
 @Injectable()

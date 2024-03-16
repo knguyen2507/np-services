@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UserInterface } from 'libs/utility/interface/user.interface';
-import { UtilityImplement } from 'libs/utility/utility.module';
 import { Login } from '.';
+import { UserInterface } from '../../../../../../libs/utility/interface/user.interface';
+import { UtilityImplement } from '../../../../../../libs/utility/utility.module';
 import { UserRepositoryImplement } from '../../../../infrastructure/repository/user';
 
 @CommandHandler(Login)

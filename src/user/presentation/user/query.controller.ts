@@ -1,10 +1,10 @@
 import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { AuthnGuard } from 'libs/guard/authentication/authn.guard';
-import { pathPrefixQueryUser, pathPrefixUser } from 'libs/utility/const/path.prefix';
-import { RequestWithUser } from 'libs/utility/interface/request.interface';
-import { UtilityImplement } from 'libs/utility/utility.module';
+import { AuthnGuard } from '../../../../libs/guard/authentication/authn.guard';
+import { pathPrefixQueryUser, pathPrefixUser } from '../../../../libs/utility/const/path.prefix';
+import { RequestWithUser } from '../../../../libs/utility/interface/request.interface';
+import { UtilityImplement } from '../../../../libs/utility/utility.module';
 import { FindUserById } from '../../application/query/user/detail';
 import { FindUserByIdResult } from '../../application/query/user/detail/result';
 import { FindUser } from '../../application/query/user/find';

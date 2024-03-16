@@ -1,11 +1,11 @@
 import { Body, Controller, HttpCode, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { AuthnGuard } from 'libs/guard/authentication/authn.guard';
-import { pathPrefixCommandUser, pathPrefixUser } from 'libs/utility/const/path.prefix';
-import { CreateUserRequestDTO, LoginRequestDTO, UpdatePasswordRequestDTO } from 'libs/utility/dto';
-import { RequestWithUser } from 'libs/utility/interface/request.interface';
-import { UtilityImplement } from 'libs/utility/utility.module';
+import { AuthnGuard } from '../../../../libs/guard/authentication/authn.guard';
+import { pathPrefixCommandUser, pathPrefixUser } from '../../../../libs/utility/const/path.prefix';
+import { CreateUserRequestDTO, LoginRequestDTO, UpdatePasswordRequestDTO } from '../../../../libs/utility/dto';
+import { RequestWithUser } from '../../../../libs/utility/interface/request.interface';
+import { UtilityImplement } from '../../../../libs/utility/utility.module';
 import { CreateUser } from '../../application/command/user/create';
 import { Login } from '../../application/command/user/login';
 import { Logout } from '../../application/command/user/logout';

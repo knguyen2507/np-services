@@ -4,11 +4,11 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { ObjectId } from 'bson';
 import { Cache } from 'cache-manager';
-import { PrismaModule } from 'libs/prisma/prisma.module';
-import { PrismaService } from 'libs/prisma/prisma.service';
-import { RedisModule } from 'libs/redis/redis.module';
 import moment from 'moment';
-import { environment } from 'src/environment';
+import { environment } from '../../src/environment';
+import { PrismaModule } from '../prisma/prisma.module';
+import { PrismaService } from '../prisma/prisma.service';
+import { RedisModule } from '../redis/redis.module';
 import { UserInterface } from './interface/user.interface';
 import { LogType } from './type';
 

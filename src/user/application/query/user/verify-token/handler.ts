@@ -5,9 +5,7 @@ import { UserQueryImplement } from '../../../../infrastructure/query/user';
 import { VerifyAccessTokenResult } from './result';
 
 @QueryHandler(VerifyAccessToken)
-export class VerifyAccessTokenHandler
-  implements IQueryHandler<VerifyAccessToken, VerifyAccessTokenResult>
-{
+export class VerifyAccessTokenHandler implements IQueryHandler<VerifyAccessToken, VerifyAccessTokenResult> {
   @Inject()
   private readonly user: UserQueryImplement;
 

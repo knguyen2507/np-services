@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
-import { PrismaModule } from 'libs/prisma/prisma.module';
+import { PrismaModule } from '../../libs/prisma/prisma.module';
 import { UpdateShopHandler } from './application/command/shop/update/handler';
 import { CreateUserHandler } from './application/command/user/create/handler';
 import { LoginHandler } from './application/command/user/login/handler';

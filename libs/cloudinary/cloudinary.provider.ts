@@ -1,6 +1,6 @@
 import { v2 as cloudinary } from 'cloudinary';
-import { CloudinaryProviderConstant } from 'libs/utility/const/constant';
-import { environment } from 'src/environment';
+import { environment } from '../../src/environment';
+import { CloudinaryProviderConstant } from '../utility/const/constant';
 
 export const CloudinaryProvider = {
   provide: CloudinaryProviderConstant,

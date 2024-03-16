@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { PrismaService } from 'libs/prisma/prisma.service';
-import { InitialBrand, InitialCategory } from 'libs/utility/const/initial';
+import { PrismaService } from '../../prisma/prisma.service';
+import { InitialBrand, InitialCategory } from '../../utility/const/initial';
 
 @Injectable()
 export class SeedShopService {

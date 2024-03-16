@@ -1,10 +1,10 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { AuthnGuard } from 'libs/guard/authentication/authn.guard';
-import { pathPrefixCommandShop, pathPrefixShop } from 'libs/utility/const/path.prefix';
-import { UpdateShopRequestDTO } from 'libs/utility/dto';
-import { UtilityImplement } from 'libs/utility/utility.module';
+import { AuthnGuard } from '../../../../libs/guard/authentication/authn.guard';
+import { pathPrefixCommandShop, pathPrefixShop } from '../../../../libs/utility/const/path.prefix';
+import { UpdateShopRequestDTO } from '../../../../libs/utility/dto';
+import { UtilityImplement } from '../../../../libs/utility/utility.module';
 import { UpdateShop } from '../../application/command/shop/update';
 
 @ApiTags(pathPrefixShop.swagger)

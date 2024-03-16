@@ -1,7 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
-import { PrismaService } from 'libs/prisma/prisma.service';
-import { UserResult } from 'libs/utility/result/user.result';
+import { PrismaService } from '../../../../../libs/prisma/prisma.service';
+import { UserResult } from '../../../../../libs/utility/result/user.result';
 import { UserModel } from '../../../domain/model/users';
 import { UserRepository } from '../../../domain/repository/user';
 import { UserFactory } from '../../factory/user';

@@ -36,16 +36,22 @@ pnpm start:dev
 
 ## Docker Container
 
-Build docker image
+Build docker image (environment)
 
 ```
-pnpm docker:build
+pnpm env:docker:build
+```
+
+Build docker image (server)
+
+```
+pnpm server:docker:build
 ```
 
 Build docker container
 
 ```
-pnpm docker:start
+pnpm server:docker:start
 ```
 
 ## Localhost

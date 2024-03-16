@@ -1,4 +1,4 @@
-import { UserInterface } from 'libs/utility/interface/user.interface';
+import { UserInterface } from '../../../../../../libs/utility/interface/user.interface';
 import { BaseQuery } from '../../base';
 
 export class VerifyAccessToken extends BaseQuery {

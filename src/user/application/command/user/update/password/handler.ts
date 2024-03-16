@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UtilityImplement } from 'libs/utility/utility.module';
 import { UpdatePassword } from '.';
+import { UtilityImplement } from '../../../../../../../libs/utility/utility.module';
 import { UserRepositoryImplement } from '../../../../../infrastructure/repository/user';
 
 @CommandHandler(UpdatePassword)
