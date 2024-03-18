@@ -3,13 +3,13 @@
 create docker image
 
 ```
-pnpm docker:build
+pnpm server:docker:build
 ```
 
 run docker image
 
 ```
-pnpm docker:start
+pnpm server:docker:start
 ```
 
 push docker image to hub
