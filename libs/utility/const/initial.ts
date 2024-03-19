@@ -87,6 +87,42 @@ export const InitialBrand = [
   },
   {
     id: `507f191e810c19729de860e6`,
+    name: 'senko',
+    brandCode: 'senko',
+    thumbnailLink: 'https://www.senko.com/wp-content/uploads/2022/02/Logo-Senko-Adavance-Components.png',
+    created: {
+      id: InitialUser1.id,
+      username: InitialUser1.username,
+      at: moment().toDate(),
+    },
+    updated: [],
+  },
+  {
+    id: `507f191e810c19729de860e7`,
+    name: 'tcl',
+    brandCode: 'tcl',
+    thumbnailLink: 'https://iconape.com/wp-content/png_logo_vector/tcl.png',
+    created: {
+      id: InitialUser1.id,
+      username: InitialUser1.username,
+      at: moment().toDate(),
+    },
+    updated: [],
+  },
+  {
+    id: `507f191e810c19729de860e8`,
+    name: 'khác',
+    brandCode: 'khac',
+    thumbnailLink: 'https://shojiki.vn/wp-content/uploads/2021/04/philips-logo.jpg',
+    created: {
+      id: InitialUser1.id,
+      username: InitialUser1.username,
+      at: moment().toDate(),
+    },
+    updated: [],
+  },
+  {
+    id: `507f191e810c19729de860e9`,
     name: 'khác',
     brandCode: 'khac',
     thumbnailLink: 'https://static.thenounproject.com/png/2821166-200.png',

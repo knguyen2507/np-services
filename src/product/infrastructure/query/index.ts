@@ -92,11 +92,13 @@ export class ProductQueryImplement implements ProductQuery {
         if (item.isCustom) {
           if (prop === 'brand') {
             const { value } = this.util.buildSearch(item);
-            conditions.push({ brand: { name: value } });
+            const brand = await this.prisma.brands.findFirst({ where: { name: value }, select: { id: true } });
+            conditions.push({ brandId: brand.id });
           }
           if (prop === 'category') {
             const { value } = this.util.buildSearch(item);
-            conditions.push({ category: { name: value } });
+            const category = await this.prisma.categories.findFirst({ where: { name: value }, select: { id: true } });
+            conditions.push({ categoryId: category.id });
           }
         } else {
           const { value } = this.util.buildSearch(item);
@@ -193,9 +195,12 @@ export class ProductQueryImplement implements ProductQuery {
 
   async findByBrand(query: FindProductByBrand): Promise<FindProductByBrandResult> {
     const { offset, limit, brandCode } = query.data;
+
+    const brand = await this.prisma.brands.findUnique({ where: { brandCode }, select: { id: true } });
+
     const [products, total] = await Promise.all([
       this.prisma.products.findMany({
-        where: { brand: { brandCode: { equals: brandCode } } },
+        where: { brandId: brand.id },
         include: { brand: true },
         skip: Number(offset),
         take: Number(limit),
@@ -209,7 +214,7 @@ export class ProductQueryImplement implements ProductQuery {
         ],
       }),
       this.prisma.products.count({
-        where: { brand: { brandCode: { equals: brandCode } } },
+        where: { brandId: brand.id },
       }),
     ]);
 
@@ -232,9 +237,12 @@ export class ProductQueryImplement implements ProductQuery {
 
   async findByCategory(query: FindProductByCategory): Promise<FindProductByCategoryResult> {
     const { offset, limit, categoryCode } = query.data;
+
+    const category = await this.prisma.categories.findUnique({ where: { categoryCode }, select: { id: true } });
+
     const [products, total] = await Promise.all([
       this.prisma.products.findMany({
-        where: { category: { categoryCode: { equals: categoryCode } } },
+        where: { categoryId: category.id },
         skip: Number(offset),
         take: Number(limit),
         orderBy: [
@@ -247,7 +255,7 @@ export class ProductQueryImplement implements ProductQuery {
         ],
       }),
       this.prisma.products.count({
-        where: { category: { categoryCode: { equals: categoryCode } } },
+        where: { categoryId: category.id },
       }),
     ]);
 
