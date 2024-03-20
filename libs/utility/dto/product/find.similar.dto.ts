@@ -5,5 +5,5 @@ export class FindProductSimilarRequestDTO {
   @ApiProperty({ type: String, example: '653780f1e12684704e5a02da' })
   @IsString()
   @IsNotEmpty()
-  readonly id!: string;
+  readonly code!: string;
 }

@@ -111,8 +111,8 @@ export const InitialBrand = [
   },
   {
     id: `507f191e810c19729de860e8`,
-    name: 'khác',
-    brandCode: 'khac',
+    name: 'philips',
+    brandCode: 'philips',
     thumbnailLink: 'https://shojiki.vn/wp-content/uploads/2021/04/philips-logo.jpg',
     created: {
       id: InitialUser1.id,

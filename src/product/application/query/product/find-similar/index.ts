@@ -2,7 +2,7 @@ import { BaseQuery } from '../../base';
 
 export class FindProductSimilar extends BaseQuery {
   data: {
-    id: string;
+    code: string;
   };
 
   constructor(data: FindProductSimilar) {

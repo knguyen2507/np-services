@@ -2,7 +2,7 @@ import { BaseQuery } from '../../base';
 
 export class FindProductByIds extends BaseQuery {
   data: {
-    ids: string[];
+    ids: string | string[];
   };
 
   constructor(data: FindProductByIds) {

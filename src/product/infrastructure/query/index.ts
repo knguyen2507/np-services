@@ -70,6 +70,7 @@ export class ProductQueryImplement implements ProductQuery {
         {
           ...i,
           thumbnailLink: i.thumbnailLink.url,
+          inStock: i.qty > 0 ? true : false,
         },
         { excludeExtraneousValues: true },
       );
@@ -283,9 +284,13 @@ export class ProductQueryImplement implements ProductQuery {
     return plainToClass(GetTotalProductResult, { total }, { excludeExtraneousValues: true });
   }
 
+  // viewed products
   async findByIds(query: FindProductByIds): Promise<FindProductByIdsResult> {
+    const id = query.data.ids;
+    const ids = Array.isArray(id) ? id : [id];
+
     const products = await this.prisma.products.findMany({
-      where: { id: { in: query.data.ids } },
+      where: { productCode: { in: ids } },
     });
 
     const items = products.map((i) => {
@@ -307,25 +312,19 @@ export class ProductQueryImplement implements ProductQuery {
 
   async findSimilar(query: FindProductSimilar): Promise<FindProductSimilarResult> {
     const product = await this.prisma.products.findUnique({
-      where: { id: query.data.id },
+      where: { productCode: query.data.code },
       select: {
         id: true,
         brand: { select: { id: true } },
         category: { select: { id: true } },
       },
     });
+
     const products = await this.prisma.products.findMany({
       where: {
-        AND: [{ brand: { id: product.brand.id } }, { category: { id: product.category.id } }],
+        AND: [{ brandId: product.brand.id }, { categoryId: product.category.id }, { id: { not: product.id } }],
       },
-      orderBy: [
-        {
-          created: { at: 'desc' },
-        },
-        {
-          id: 'asc',
-        },
-      ],
+      take: Number(20),
     });
 
     const items = products.map((i) => {

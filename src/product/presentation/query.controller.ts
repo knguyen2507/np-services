@@ -66,6 +66,7 @@ export class ProductQueryController {
 
   @Get(pathPrefixQueryProduct.findProductById)
   @UseGuards(AuthnGuard)
+  @ApiBearerAuth()
   async FindProductById(@Query() query: FindProductByIdRequestDTO): Promise<any> {
     const msg = {
       messageId: this.util.generateId(),
