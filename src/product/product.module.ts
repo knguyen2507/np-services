@@ -12,6 +12,9 @@ import { FindProductByBrandHandler } from './application/query/product/find-by-b
 import { FindProductByCategoryHandler } from './application/query/product/find-by-category/handler';
 import { FindProductByIdHandler } from './application/query/product/find-by-id/handler';
 import { FindProductByIdsHandler } from './application/query/product/find-by-ids/handler';
+import { FindProductSameBrandHandler } from './application/query/product/find-same-brand/handler';
+import { FindProductSameCategoryHandler } from './application/query/product/find-same-category/handler';
+import { FindProductSamePriceHandler } from './application/query/product/find-same-price/handler';
 import { FindProductSimilarHandler } from './application/query/product/find-similar/handler';
 import { FindProductHandler } from './application/query/product/find/handler';
 import { GetTotalProductHandler } from './application/query/product/get-total/handler';
@@ -34,6 +37,9 @@ const queries = [
   FindProductByAdminHandler,
   FindProductByIdsHandler,
   FindProductSimilarHandler,
+  FindProductSameBrandHandler,
+  FindProductSameCategoryHandler,
+  FindProductSamePriceHandler,
   FindProductByIdHandler,
 ];
 

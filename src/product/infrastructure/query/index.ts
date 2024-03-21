@@ -1,7 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
-import { PrismaService } from 'libs/prisma/prisma.service';
-import { UtilityImplement } from 'libs/utility/utility.module';
+import { PrismaService } from '../../../../libs/prisma/prisma.service';
+import { UtilityImplement } from '../../../../libs/utility/utility.module';
 import { FindProductByCode } from '../../application/query/product/detail';
 import { FindProductByCodeResult } from '../../application/query/product/detail/result';
 import { FindProduct } from '../../application/query/product/find';
@@ -24,6 +24,21 @@ import { FindProductById } from '../../application/query/product/find-by-id';
 import { FindProductByIdResult } from '../../application/query/product/find-by-id/result';
 import { FindProductByIds } from '../../application/query/product/find-by-ids';
 import { FindProductByIdsResult, FindProductByIdsResultItem } from '../../application/query/product/find-by-ids/result';
+import { FindProductSameBrand } from '../../application/query/product/find-same-brand';
+import {
+  FindProductSameBrandResult,
+  FindProductSameBrandResultItem,
+} from '../../application/query/product/find-same-brand/result';
+import { FindProductSameCategory } from '../../application/query/product/find-same-category';
+import {
+  FindProductSameCategoryResult,
+  FindProductSameCategoryResultItem,
+} from '../../application/query/product/find-same-category/result';
+import { FindProductSamePrice } from '../../application/query/product/find-same-price';
+import {
+  FindProductSamePriceResult,
+  FindProductSamePriceResultItem,
+} from '../../application/query/product/find-same-price/result';
 import { FindProductSimilar } from '../../application/query/product/find-similar';
 import {
   FindProductSimilarResult,
@@ -315,14 +330,14 @@ export class ProductQueryImplement implements ProductQuery {
       where: { productCode: query.data.code },
       select: {
         id: true,
-        brand: { select: { id: true } },
-        category: { select: { id: true } },
+        brandId: true,
+        categoryId: true,
       },
     });
 
     const products = await this.prisma.products.findMany({
       where: {
-        AND: [{ brandId: product.brand.id }, { categoryId: product.category.id }, { id: { not: product.id } }],
+        AND: [{ brandId: product.brandId }, { categoryId: product.categoryId }, { id: { not: product.id } }],
       },
       take: Number(20),
     });
@@ -330,6 +345,112 @@ export class ProductQueryImplement implements ProductQuery {
     const items = products.map((i) => {
       return plainToClass(
         FindProductSimilarResultItem,
+        {
+          ...i,
+          thumbnailLink: i.thumbnailLink.url,
+        },
+        { excludeExtraneousValues: true },
+      );
+    });
+
+    return {
+      items,
+      total: 0,
+    };
+  }
+
+  async findSameBrand(query: FindProductSameBrand): Promise<FindProductSameBrandResult> {
+    const product = await this.prisma.products.findUnique({
+      where: { productCode: query.data.code },
+      select: {
+        id: true,
+        brandId: true,
+      },
+    });
+
+    const products = await this.prisma.products.findMany({
+      where: {
+        AND: [{ brandId: product.brandId }, { id: { not: product.id } }],
+      },
+      take: Number(20),
+    });
+
+    const items = products.map((i) => {
+      return plainToClass(
+        FindProductSameBrandResultItem,
+        {
+          ...i,
+          thumbnailLink: i.thumbnailLink.url,
+        },
+        { excludeExtraneousValues: true },
+      );
+    });
+
+    return {
+      items,
+      total: 0,
+    };
+  }
+
+  async findSameCategory(query: FindProductSameCategory): Promise<FindProductSameCategoryResult> {
+    const product = await this.prisma.products.findUnique({
+      where: { productCode: query.data.code },
+      select: {
+        id: true,
+        categoryId: true,
+      },
+    });
+
+    const products = await this.prisma.products.findMany({
+      where: {
+        AND: [{ categoryId: product.categoryId }, { id: { not: product.id } }],
+      },
+      take: Number(20),
+    });
+
+    const items = products.map((i) => {
+      return plainToClass(
+        FindProductSameCategoryResultItem,
+        {
+          ...i,
+          thumbnailLink: i.thumbnailLink.url,
+        },
+        { excludeExtraneousValues: true },
+      );
+    });
+
+    return {
+      items,
+      total: 0,
+    };
+  }
+
+  async findSamePrice(query: FindProductSamePrice): Promise<FindProductSamePriceResult> {
+    const product = await this.prisma.products.findUnique({
+      where: { productCode: query.data.code },
+      select: {
+        id: true,
+        brandId: true,
+        categoryId: true,
+        price: true,
+      },
+    });
+
+    const products = await this.prisma.products.findMany({
+      where: {
+        AND: [
+          { brandId: product.brandId },
+          { categoryId: product.categoryId },
+          { price: { gte: product.price - 10, lt: product.price + 10 } },
+          { id: { not: product.id } },
+        ],
+      },
+      take: Number(20),
+    });
+
+    const items = products.map((i) => {
+      return plainToClass(
+        FindProductSamePriceResultItem,
         {
           ...i,
           thumbnailLink: i.thumbnailLink.url,

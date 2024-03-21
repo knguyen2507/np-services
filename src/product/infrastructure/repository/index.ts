@@ -1,5 +1,5 @@
 import { Inject } from '@nestjs/common';
-import { PrismaService } from 'libs/prisma/prisma.service';
+import { PrismaService } from '../../../../libs/prisma/prisma.service';
 import { ProductModel } from '../../domain/model/product';
 import { ProductRepository } from '../../domain/repository';
 import { ProductFactory } from '../factory/product';

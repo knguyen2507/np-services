@@ -11,6 +11,9 @@ import {
   FindProductByIdRequestDTO,
   FindProductByIdsRequestDTO,
   FindProductRequestDTO,
+  FindProductSameBrandRequestDTO,
+  FindProductSameCategoryRequestDTO,
+  FindProductSamePriceRequestDTO,
   FindProductSimilarRequestDTO,
 } from 'libs/utility/dto';
 import { UtilityImplement } from 'libs/utility/utility.module';
@@ -21,6 +24,9 @@ import { FindProductByBrand } from '../application/query/product/find-by-brand';
 import { FindProductByCategory } from '../application/query/product/find-by-category';
 import { FindProductById } from '../application/query/product/find-by-id';
 import { FindProductByIds } from '../application/query/product/find-by-ids';
+import { FindProductSameBrand } from '../application/query/product/find-same-brand';
+import { FindProductSameCategory } from '../application/query/product/find-same-category';
+import { FindProductSamePrice } from '../application/query/product/find-same-price';
 import { FindProductSimilar } from '../application/query/product/find-similar';
 import { GetTotalProduct } from '../application/query/product/get-total';
 
@@ -113,6 +119,36 @@ export class ProductQueryController {
       data: query,
     };
     const product = new FindProductSimilar(msg);
+    return await this.queryBus.execute(product);
+  }
+
+  @Get(pathPrefixQueryProduct.findProductSameBrand)
+  async FindProductSameBrand(@Query() query: FindProductSameBrandRequestDTO): Promise<any> {
+    const msg = {
+      messageId: this.util.generateId(),
+      data: query,
+    };
+    const product = new FindProductSameBrand(msg);
+    return await this.queryBus.execute(product);
+  }
+
+  @Get(pathPrefixQueryProduct.findProductSameCategory)
+  async FindProductSameCategory(@Query() query: FindProductSameCategoryRequestDTO): Promise<any> {
+    const msg = {
+      messageId: this.util.generateId(),
+      data: query,
+    };
+    const product = new FindProductSameCategory(msg);
+    return await this.queryBus.execute(product);
+  }
+
+  @Get(pathPrefixQueryProduct.findProductSamePrice)
+  async FindProductSameprice(@Query() query: FindProductSamePriceRequestDTO): Promise<any> {
+    const msg = {
+      messageId: this.util.generateId(),
+      data: query,
+    };
+    const product = new FindProductSamePrice(msg);
     return await this.queryBus.execute(product);
   }
 
