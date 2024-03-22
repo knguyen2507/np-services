@@ -1,5 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { Inject, Injectable } from '@nestjs/common';
+import { ElasticsearchService } from '@nestjs/elasticsearch';
+import { Products } from '@prisma/client';
 import { ObjectId } from 'bson';
 import moment from 'moment';
 import { PrismaService } from '../../prisma/prisma.service';
@@ -7,7 +9,11 @@ import { InitialUser1 } from '../../utility/const/initial';
 
 @Injectable()
 export class SeedProductService {
-  constructor(@Inject(PrismaService) private prisma: PrismaService) {}
+  constructor(
+    @Inject(PrismaService)
+    private prisma: PrismaService,
+    private readonly elasticsearch: ElasticsearchService,
+  ) {}
 
   seed = async () => {
     const products = await this.prisma.products.findFirst();
@@ -53,25 +59,48 @@ export class SeedProductService {
       const category = faker.helpers.arrayElement(categories);
       const purchase = faker.number.int({ min: 100, max: 500 });
 
-      await this.prisma.products.create({
-        data: {
-          name: `${category.name} ${brand.name} ${i}`,
-          productCode: `test-product-${i}`,
-          categoryId: category.id,
-          brandId: brand.id,
-          qty: faker.number.int({ min: 0, max: 5 }),
-          purchase,
-          price: purchase + faker.number.int({ min: 10, max: 50 }),
-          thumbnailLink,
-          description,
-          images,
-          created: {
-            id: InitialUser1.id,
-            username: InitialUser1.username,
-            at: moment().toDate(),
-          },
+      const data = {
+        id: new ObjectId().toString(),
+        name: `${category.name} ${brand.name} ${i}`,
+        productCode: `test-product-${i}`,
+        categoryId: category.id,
+        brandId: brand.id,
+        qty: faker.number.int({ min: 0, max: 5 }),
+        purchase,
+        price: purchase + faker.number.int({ min: 10, max: 50 }),
+        thumbnailLink,
+        description,
+        images,
+        created: {
+          id: InitialUser1.id,
+          username: InitialUser1.username,
+          at: moment().toDate(),
         },
-      });
+        updated: [],
+      };
+
+      await Promise.all([this.indexProduct(data), this.prisma.products.create({ data })]);
     }
+  }
+
+  async indexProduct(product: Products): Promise<any> {
+    return this.elasticsearch.index<any>({
+      index: 'products',
+      body: {
+        id: product.id,
+        productCode: product.productCode,
+        name: product.name,
+        categoryId: product.categoryId,
+        brandId: product.brandId,
+        qty: product.qty,
+        purchase: product.purchase,
+        price: product.price,
+        thumbnailLink: product.thumbnailLink,
+        description: product.description,
+        images: product.images,
+        created: product.created,
+        updated: product.updated,
+      },
+    });
   }
 }

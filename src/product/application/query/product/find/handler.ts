@@ -9,7 +9,7 @@ export class FindProductHandler implements IQueryHandler<FindProduct, FindProduc
   @Inject()
   private readonly product: ProductQueryImplement;
 
-  async execute(query: FindProduct): Promise<FindProductResult> {
+  async execute(query: FindProduct): Promise<any> {
     return await this.product.find(query);
   }
 }

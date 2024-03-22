@@ -1,4 +1,5 @@
 import { Inject } from '@nestjs/common';
+import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { plainToClass } from 'class-transformer';
 import { PrismaService } from '../../../../libs/prisma/prisma.service';
 import { UtilityImplement } from '../../../../libs/utility/utility.module';
@@ -54,38 +55,92 @@ export class ProductQueryImplement implements ProductQuery {
   private readonly prisma: PrismaService;
   @Inject()
   private readonly util: UtilityImplement;
+  @Inject()
+  private readonly elasticsearch: ElasticsearchService;
+
+  // async find(query: FindProduct): Promise<FindProductResult> {
+  //   const { offset, limit, searchName } = query.data;
+  //   const condition = [];
+  //   if (searchName) {
+  //     condition.push({ name: { contains: searchName, mode: 'insensitive' } });
+  //   }
+
+  //   const [products, total] = await Promise.all([
+  //     this.prisma.products.findMany({
+  //       where: { AND: condition },
+  //       skip: Number(offset),
+  //       take: Number(limit),
+  //       orderBy: [
+  //         {
+  //           created: { at: 'desc' },
+  //         },
+  //         {
+  //           id: 'asc',
+  //         },
+  //       ],
+  //     }),
+  //     this.prisma.products.count({ where: { AND: condition } }),
+  //   ]);
+
+  //   const items = products.map((i) => {
+  //     return plainToClass(
+  //       FindProductResultItem,
+  //       {
+  //         ...i,
+  //         thumbnailLink: i.thumbnailLink.url,
+  //         inStock: i.qty > 0 ? true : false,
+  //       },
+  //       { excludeExtraneousValues: true },
+  //     );
+  //   });
+
+  //   return {
+  //     items,
+  //     total,
+  //   };
+  // }
 
   async find(query: FindProduct): Promise<FindProductResult> {
     const { offset, limit, searchName } = query.data;
-    const condition = [];
+    let queryString = {};
     if (searchName) {
-      condition.push({ name: { contains: searchName, mode: 'insensitive' } });
+      queryString = {
+        query_string: {
+          query: `*${searchName}*`,
+          fields: ['name'],
+        },
+      };
+    } else {
+      queryString = {
+        match_all: {},
+      };
     }
 
     const [products, total] = await Promise.all([
-      this.prisma.products.findMany({
-        where: { AND: condition },
-        skip: Number(offset),
-        take: Number(limit),
-        orderBy: [
-          {
-            created: { at: 'desc' },
-          },
-          {
-            id: 'asc',
-          },
-        ],
+      this.elasticsearch.search<any>({
+        index: 'products',
+        body: {
+          query: queryString,
+          from: Number(offset),
+          size: Number(limit),
+          sort: [{ 'created.at': { order: 'desc' } }],
+        },
       }),
-      this.prisma.products.count({ where: { AND: condition } }),
+      this.elasticsearch.count({
+        index: 'products',
+        body: {
+          query: queryString,
+        },
+      }),
     ]);
 
-    const items = products.map((i) => {
+    const items = products.hits.hits.map((i) => {
       return plainToClass(
         FindProductResultItem,
         {
-          ...i,
-          thumbnailLink: i.thumbnailLink.url,
-          inStock: i.qty > 0 ? true : false,
+          ...i._source,
+          thumbnailLink: i._source.thumbnailLink.url,
+          inStock: i._source.qty > 0 ? true : false,
         },
         { excludeExtraneousValues: true },
       );
@@ -93,7 +148,7 @@ export class ProductQueryImplement implements ProductQuery {
 
     return {
       items,
-      total,
+      total: total.count,
     };
   }
 
@@ -430,7 +485,6 @@ export class ProductQueryImplement implements ProductQuery {
       where: { productCode: query.data.code },
       select: {
         id: true,
-        brandId: true,
         categoryId: true,
         price: true,
       },
@@ -439,7 +493,6 @@ export class ProductQueryImplement implements ProductQuery {
     const products = await this.prisma.products.findMany({
       where: {
         AND: [
-          { brandId: product.brandId },
           { categoryId: product.categoryId },
           { price: { gte: product.price - 10, lt: product.price + 10 } },
           { id: { not: product.id } },

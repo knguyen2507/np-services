@@ -57,6 +57,15 @@ class EnvironmentVariables {
   @IsString()
   readonly CLOUDINARY_APISECRET: string = process.env['CLOUDINARY_APISECRET'] as string;
 
+  @IsString()
+  readonly ELASTICSEARCH_NODE: string = process.env['ELASTICSEARCH_NODE'] as string;
+
+  @IsString()
+  readonly ELASTICSEARCH_USERNAME: string = process.env['ELASTICSEARCH_USERNAME'] as string;
+
+  @IsString()
+  readonly ELASTICSEARCH_PASSWORD: string = process.env['ELASTICSEARCH_PASSWORD'] as string;
+
   constructor() {
     const error = validateSync(this);
     if (!error.length) return;

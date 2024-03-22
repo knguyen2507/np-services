@@ -1,4 +1,5 @@
 import { Inject } from '@nestjs/common';
+import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { PrismaService } from '../../../../libs/prisma/prisma.service';
 import { ProductModel } from '../../domain/model/product';
 import { ProductRepository } from '../../domain/repository';
@@ -9,6 +10,8 @@ export class ProductRepositoryImplement implements ProductRepository {
   private readonly factory: ProductFactory;
   @Inject()
   private readonly prisma: PrismaService;
+  @Inject()
+  private readonly elasticsearch: ElasticsearchService;
 
   async save(data: ProductModel): Promise<ProductModel> {
     // const [error, saved] = await this.util.handleError(
@@ -23,6 +26,13 @@ export class ProductRepositoryImplement implements ProductRepository {
     // }
     const saved = await this.prisma.products.create({ data });
     return this.factory.createProductModel(saved);
+  }
+
+  async createSearch(data: ProductModel): Promise<void> {
+    await this.elasticsearch.index({
+      index: 'products',
+      body: data,
+    });
   }
 
   async remove(id: string | string[]): Promise<void> {

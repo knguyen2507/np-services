@@ -1,11 +1,12 @@
 import { Inject, Module, OnModuleInit } from '@nestjs/common';
+import { SearchModule } from 'libs/search/search.module';
 import { PrismaModule } from '../prisma/prisma.module';
 import { SeedAuthnService } from './seed/seed.authn.service';
 import { SeedProductService } from './seed/seed.product.service';
 import { SeedShopService } from './seed/seed.shop.services';
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModule, SearchModule],
   controllers: [],
   providers: [SeedAuthnService, SeedShopService, SeedProductService],
   exports: [],

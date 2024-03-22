@@ -40,3 +40,24 @@ services:
       - TZ=Asia/Ho_Chi_Minh
     networks:
       - gateway-network
+
+  store-elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.12.2
+    container_name: store-elasticsearch
+    ports:
+      - '9200:9200'
+      - '9300:9300'
+    environment:
+      - ELASTIC_PASSWORD=abc12345
+      - discovery.type=single-node
+      - xpack.security.enabled=true
+      - path.data=/usr/share/elasticsearch/data
+      - bootstrap.memory_lock=true
+      - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    mem_limit: 1g
+    networks:
+      - gateway-network
