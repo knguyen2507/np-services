@@ -1,10 +1,10 @@
 import { faker } from '@faker-js/faker';
 import { Inject, Injectable } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
-import { Products } from '@prisma/client';
 import { ObjectId } from 'bson';
 import moment from 'moment';
 import { PrismaService } from '../../prisma/prisma.service';
+import { ProductSearchModel } from '../../search/search.model';
 import { InitialUser1 } from '../../utility/const/initial';
 
 @Injectable()
@@ -79,11 +79,11 @@ export class SeedProductService {
         updated: [],
       };
 
-      await Promise.all([this.indexProduct(data), this.prisma.products.create({ data })]);
+      await Promise.all([this.indexProduct({ ...data, brand, category }), this.prisma.products.create({ data })]);
     }
   }
 
-  async indexProduct(product: Products): Promise<any> {
+  async indexProduct(product: ProductSearchModel): Promise<any> {
     return this.elasticsearch.index<any>({
       index: 'products',
       body: {
@@ -91,7 +91,9 @@ export class SeedProductService {
         productCode: product.productCode,
         name: product.name,
         categoryId: product.categoryId,
+        brand: product.brand,
         brandId: product.brandId,
+        category: product.category,
         qty: product.qty,
         purchase: product.purchase,
         price: product.price,

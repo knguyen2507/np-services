@@ -67,6 +67,6 @@ export class CreateProductHandler implements ICommandHandler<CreateProduct, void
       updated: [],
     });
 
-    await Promise.all([this.product.save(model), this.product.createSearch(model)]);
+    await Promise.all([this.product.save(model), this.product.createSearch({ ...model, brand: null, category: null })]);
   }
 }

@@ -1,5 +1,6 @@
 import { Inject } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
+import { ProductSearchModel } from 'libs/search/search.model';
 import { PrismaService } from '../../../../libs/prisma/prisma.service';
 import { ProductModel } from '../../domain/model/product';
 import { ProductRepository } from '../../domain/repository';
@@ -28,10 +29,14 @@ export class ProductRepositoryImplement implements ProductRepository {
     return this.factory.createProductModel(saved);
   }
 
-  async createSearch(data: ProductModel): Promise<void> {
+  async createSearch(data: ProductSearchModel): Promise<void> {
+    const [brand, category] = await Promise.all([
+      this.prisma.brands.findUnique({ where: { id: data.brandId } }),
+      this.prisma.categories.findUnique({ where: { id: data.categoryId } }),
+    ]);
     await this.elasticsearch.index({
       index: 'products',
-      body: data,
+      body: { ...data, brand, category },
     });
   }
 

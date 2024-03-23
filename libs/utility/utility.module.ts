@@ -107,6 +107,7 @@ export class UtilityImplement {
     });
   }
 
+  // search for prisma mongodb
   buildSearch(item: any) {
     let value;
     if (item.valueType === 'text') {
@@ -125,6 +126,43 @@ export class UtilityImplement {
     }
     if (item.valueType === 'boolean') {
       value = { eq: item.value };
+    }
+
+    return { value };
+  }
+
+  // search for elasticsearch
+  buildSearch2(prop: string, item: any) {
+    let value;
+    if (item.valueType === 'text') {
+      value = {
+        query_string: {
+          query: `*${item.value}*`,
+          fields: [`${prop}`],
+        },
+      };
+    }
+    if (item.valueType === 'number') {
+      const obj = {};
+      obj[`${prop}`] = Number(item.value);
+      value = { match: obj };
+    }
+    if (item.valueType === 'date') {
+      const obj = {};
+      const fromDate = moment(item.fromDate).toDate();
+      const toDate = moment(item.toDate).toDate();
+      obj[`${prop}`] = { gte: fromDate, lte: toDate };
+      value = { range: obj };
+    }
+    if (item.valueType === 'set') {
+      const obj = {};
+      obj[`[${prop}]`] = Array.from(item.value);
+      value = { terms: obj };
+    }
+    if (item.valueType === 'boolean') {
+      const obj = {};
+      obj[`${prop}`] = item.value;
+      value = { term: obj };
     }
 
     return { value };
