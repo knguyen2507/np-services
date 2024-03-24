@@ -179,19 +179,18 @@ export class ProductQueryImplement implements ProductQuery {
   }
 
   async findByCode(query: FindProductByCode): Promise<FindProductByCodeResult> {
-    const product = await this.prisma.products.findUnique({
-      where: { productCode: query.data.productCode },
-      include: {
-        category: true,
-        brand: true,
+    const product = await this.elasticsearch.search<any>({
+      index: 'products',
+      body: {
+        query: { match: { productCode: query.data.productCode } },
       },
     });
 
     const data = {
-      ...product,
-      category: product.category.name,
-      brand: product.brand.name,
-      qtyStatus: product.qty > 0,
+      ...product.hits.hits[0]._source,
+      category: product.hits.hits[0]._source.category.name,
+      brand: product.hits.hits[0]._source.brand.name,
+      qtyStatus: product.hits.hits[0]._source.qty > 0,
     };
 
     return plainToClass(FindProductByCodeResult, data, {
@@ -200,19 +199,16 @@ export class ProductQueryImplement implements ProductQuery {
   }
 
   async findById(query: FindProductById): Promise<FindProductByIdResult> {
-    const product = await this.prisma.products.findUnique({
-      where: { id: query.data.id },
-      include: {
-        category: true,
-        brand: true,
-      },
+    const product = await this.elasticsearch.get<any>({
+      index: 'products',
+      id: query.data.id,
     });
 
     const data = {
-      ...product,
-      category: product.category.name,
-      brand: product.brand.name,
-      createdAt: product.created.at,
+      ...product._source,
+      category: product._source.category.name,
+      brand: product._source.brand.name,
+      createdAt: product._source.created.at,
     };
 
     return plainToClass(FindProductByIdResult, data, {
@@ -226,31 +222,29 @@ export class ProductQueryImplement implements ProductQuery {
     const brand = await this.prisma.brands.findUnique({ where: { brandCode }, select: { id: true } });
 
     const [products, total] = await Promise.all([
-      this.prisma.products.findMany({
-        where: { brandId: brand.id },
-        include: { brand: true },
-        skip: Number(offset),
-        take: Number(limit),
-        orderBy: [
-          {
-            created: { at: 'desc' },
-          },
-          {
-            id: 'asc',
-          },
-        ],
+      this.elasticsearch.search<any>({
+        index: 'products',
+        body: {
+          query: { match: { brandId: brand.id } },
+          from: Number(offset),
+          size: Number(limit),
+          sort: [{ 'created.at': { order: 'desc' } }],
+        },
       }),
-      this.prisma.products.count({
-        where: { brandId: brand.id },
+      this.elasticsearch.count({
+        index: 'products',
+        body: {
+          query: { match: { brandId: brand.id } },
+        },
       }),
     ]);
 
-    const items = products.map((i) => {
+    const items = products.hits.hits.map((i) => {
       return plainToClass(
         FindProductByBrandResultItem,
         {
-          ...i,
-          thumbnailLink: i.thumbnailLink.url,
+          ...i._source,
+          thumbnailLink: i._source.thumbnailLink.url,
         },
         { excludeExtraneousValues: true },
       );
@@ -258,7 +252,7 @@ export class ProductQueryImplement implements ProductQuery {
 
     return {
       items,
-      total,
+      total: total.count,
     };
   }
 
@@ -268,30 +262,29 @@ export class ProductQueryImplement implements ProductQuery {
     const category = await this.prisma.categories.findUnique({ where: { categoryCode }, select: { id: true } });
 
     const [products, total] = await Promise.all([
-      this.prisma.products.findMany({
-        where: { categoryId: category.id },
-        skip: Number(offset),
-        take: Number(limit),
-        orderBy: [
-          {
-            created: { at: 'desc' },
-          },
-          {
-            id: 'asc',
-          },
-        ],
+      this.elasticsearch.search<any>({
+        index: 'products',
+        body: {
+          query: { match: { categoryId: category.id } },
+          from: Number(offset),
+          size: Number(limit),
+          sort: [{ 'created.at': { order: 'desc' } }],
+        },
       }),
-      this.prisma.products.count({
-        where: { categoryId: category.id },
+      this.elasticsearch.count({
+        index: 'products',
+        body: {
+          query: { match: { categoryId: category.id } },
+        },
       }),
     ]);
 
-    const items = products.map((i) => {
+    const items = products.hits.hits.map((i) => {
       return plainToClass(
         FindProductByCategoryResultItem,
         {
-          ...i,
-          thumbnailLink: i.thumbnailLink.url,
+          ...i._source,
+          thumbnailLink: i._source.thumbnailLink.url,
         },
         { excludeExtraneousValues: true },
       );
@@ -299,7 +292,7 @@ export class ProductQueryImplement implements ProductQuery {
 
     return {
       items,
-      total,
+      total: total.count,
     };
   }
 
@@ -316,16 +309,23 @@ export class ProductQueryImplement implements ProductQuery {
     const id = query.data.ids;
     const ids = Array.isArray(id) ? id : [id];
 
-    const products = await this.prisma.products.findMany({
-      where: { productCode: { in: ids } },
+    const products = await this.elasticsearch.search<any>({
+      index: 'products',
+      body: {
+        query: {
+          terms: {
+            ['productCode']: ids,
+          },
+        },
+      },
     });
 
-    const items = products.map((i) => {
+    const items = products.hits.hits.map((i) => {
       return plainToClass(
         FindProductByIdsResultItem,
         {
-          ...i,
-          thumbnailLink: i.thumbnailLink.url,
+          ...i._source,
+          thumbnailLink: i._source.thumbnailLink.url,
         },
         { excludeExtraneousValues: true },
       );
@@ -338,28 +338,38 @@ export class ProductQueryImplement implements ProductQuery {
   }
 
   async findSimilar(query: FindProductSimilar): Promise<FindProductSimilarResult> {
-    const product = await this.prisma.products.findUnique({
-      where: { productCode: query.data.code },
-      select: {
-        id: true,
-        brandId: true,
-        categoryId: true,
+    const data = await this.elasticsearch.search<any>({
+      index: 'products',
+      body: {
+        query: { match: { productCode: query.data.code } },
       },
     });
 
-    const products = await this.prisma.products.findMany({
-      where: {
-        AND: [{ brandId: product.brandId }, { categoryId: product.categoryId }, { id: { not: product.id } }],
+    const product = {
+      id: data.hits.hits[0]._source.id,
+      brandId: data.hits.hits[0]._source.brandId,
+      categoryId: data.hits.hits[0]._source.categoryId,
+    };
+
+    const products = await this.elasticsearch.search<any>({
+      index: 'products',
+      body: {
+        query: {
+          bool: {
+            must: [{ match: { brandId: product.brandId } }, { match: { categoryId: product.categoryId } }],
+            must_not: [{ match: { id: product.id } }],
+          },
+        },
+        size: 20,
       },
-      take: Number(20),
     });
 
-    const items = products.map((i) => {
+    const items = products.hits.hits.map((i) => {
       return plainToClass(
         FindProductSimilarResultItem,
         {
-          ...i,
-          thumbnailLink: i.thumbnailLink.url,
+          ...i._source,
+          thumbnailLink: i._source.thumbnailLink.url,
         },
         { excludeExtraneousValues: true },
       );
@@ -372,27 +382,37 @@ export class ProductQueryImplement implements ProductQuery {
   }
 
   async findSameBrand(query: FindProductSameBrand): Promise<FindProductSameBrandResult> {
-    const product = await this.prisma.products.findUnique({
-      where: { productCode: query.data.code },
-      select: {
-        id: true,
-        brandId: true,
+    const data = await this.elasticsearch.search<any>({
+      index: 'products',
+      body: {
+        query: { match: { productCode: query.data.code } },
       },
     });
 
-    const products = await this.prisma.products.findMany({
-      where: {
-        AND: [{ brandId: product.brandId }, { id: { not: product.id } }],
+    const product = {
+      id: data.hits.hits[0]._source.id,
+      brandId: data.hits.hits[0]._source.brandId,
+    };
+
+    const products = await this.elasticsearch.search<any>({
+      index: 'products',
+      body: {
+        query: {
+          bool: {
+            must: [{ match: { brandId: product.brandId } }],
+            must_not: [{ match: { id: product.id } }],
+          },
+        },
+        size: 20,
       },
-      take: Number(20),
     });
 
-    const items = products.map((i) => {
+    const items = products.hits.hits.map((i) => {
       return plainToClass(
         FindProductSameBrandResultItem,
         {
-          ...i,
-          thumbnailLink: i.thumbnailLink.url,
+          ...i._source,
+          thumbnailLink: i._source.thumbnailLink.url,
         },
         { excludeExtraneousValues: true },
       );
@@ -405,27 +425,37 @@ export class ProductQueryImplement implements ProductQuery {
   }
 
   async findSameCategory(query: FindProductSameCategory): Promise<FindProductSameCategoryResult> {
-    const product = await this.prisma.products.findUnique({
-      where: { productCode: query.data.code },
-      select: {
-        id: true,
-        categoryId: true,
+    const data = await this.elasticsearch.search<any>({
+      index: 'products',
+      body: {
+        query: { match: { productCode: query.data.code } },
       },
     });
 
-    const products = await this.prisma.products.findMany({
-      where: {
-        AND: [{ categoryId: product.categoryId }, { id: { not: product.id } }],
+    const product = {
+      id: data.hits.hits[0]._source.id,
+      categoryId: data.hits.hits[0]._source.categoryId,
+    };
+
+    const products = await this.elasticsearch.search<any>({
+      index: 'products',
+      body: {
+        query: {
+          bool: {
+            must: [{ match: { categoryId: product.categoryId } }],
+            must_not: [{ match: { id: product.id } }],
+          },
+        },
+        size: 20,
       },
-      take: Number(20),
     });
 
-    const items = products.map((i) => {
+    const items = products.hits.hits.map((i) => {
       return plainToClass(
         FindProductSameCategoryResultItem,
         {
-          ...i,
-          thumbnailLink: i.thumbnailLink.url,
+          ...i._source,
+          thumbnailLink: i._source.thumbnailLink.url,
         },
         { excludeExtraneousValues: true },
       );
@@ -438,32 +468,41 @@ export class ProductQueryImplement implements ProductQuery {
   }
 
   async findSamePrice(query: FindProductSamePrice): Promise<FindProductSamePriceResult> {
-    const product = await this.prisma.products.findUnique({
-      where: { productCode: query.data.code },
-      select: {
-        id: true,
-        categoryId: true,
-        price: true,
+    const data = await this.elasticsearch.search<any>({
+      index: 'products',
+      body: {
+        query: { match: { productCode: query.data.code } },
       },
     });
 
-    const products = await this.prisma.products.findMany({
-      where: {
-        AND: [
-          { categoryId: product.categoryId },
-          { price: { gte: product.price - 10, lt: product.price + 10 } },
-          { id: { not: product.id } },
-        ],
+    const product = {
+      id: data.hits.hits[0]._source.id,
+      price: data.hits.hits[0]._source.price,
+      categoryId: data.hits.hits[0]._source.categoryId,
+    };
+
+    const products = await this.elasticsearch.search<any>({
+      index: 'products',
+      body: {
+        query: {
+          bool: {
+            must: [
+              { match: { categoryId: product.categoryId } },
+              { range: { price: { gte: product.price - 10, lte: product.price + 10 } } },
+            ],
+            must_not: [{ match: { id: product.id } }],
+          },
+        },
+        size: 20,
       },
-      take: Number(20),
     });
 
-    const items = products.map((i) => {
+    const items = products.hits.hits.map((i) => {
       return plainToClass(
         FindProductSamePriceResultItem,
         {
-          ...i,
-          thumbnailLink: i.thumbnailLink.url,
+          ...i._source,
+          thumbnailLink: i._source.thumbnailLink.url,
         },
         { excludeExtraneousValues: true },
       );
