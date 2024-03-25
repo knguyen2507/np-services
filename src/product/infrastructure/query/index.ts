@@ -312,9 +312,12 @@ export class ProductQueryImplement implements ProductQuery {
     const products = await this.elasticsearch.search<any>({
       index: 'products',
       body: {
+        size: Number(ids.length),
         query: {
-          terms: {
-            ['productCode']: ids,
+          bool: {
+            must: ids.map((id) => ({
+              match: { productCode: id },
+            })),
           },
         },
       },
