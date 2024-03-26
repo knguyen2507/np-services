@@ -7,4 +7,14 @@ export class FindProductRequestDTO extends PaginatorDTO {
   @IsOptional()
   @IsString()
   readonly searchName?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  readonly searchType?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  readonly searchValue?: string;
 }

@@ -12,6 +12,8 @@ export class FindProductByCategoryResultItem {
   readonly price: number;
   @Expose()
   readonly thumbnailLink: string;
+  @Expose()
+  readonly inStock: boolean;
 }
 
 export class FindProductByCategoryResult implements IQueryResult {

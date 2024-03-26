@@ -59,13 +59,35 @@ export class ProductQueryImplement implements ProductQuery {
   private readonly elasticsearch: ElasticsearchService;
 
   async find(query: FindProduct): Promise<FindProductResult> {
-    const { offset, limit, searchName } = query.data;
+    const { offset, limit, searchName, searchType, searchValue } = query.data;
     let queryString = {};
     if (searchName) {
-      queryString = {
+      const conditions = [];
+
+      conditions.push({
         query_string: {
           query: `*${searchName}*`,
           fields: ['name'],
+        },
+      });
+
+      if (searchType && searchValue) {
+        let data;
+        if (searchType === 'brand') {
+          data = await this.prisma.brands.findUnique({ where: { brandCode: searchValue }, select: { id: true } });
+          conditions.push({ match: { brandId: data.id } });
+        } else {
+          data = await this.prisma.categories.findUnique({
+            where: { categoryCode: searchValue },
+            select: { id: true },
+          });
+          conditions.push({ match: { categoryId: data.id } });
+        }
+      }
+
+      queryString = {
+        bool: {
+          must: conditions,
         },
       };
     } else {
@@ -245,6 +267,7 @@ export class ProductQueryImplement implements ProductQuery {
         {
           ...i._source,
           thumbnailLink: i._source.thumbnailLink.url,
+          inStock: i._source.qty > 0 ? true : false,
         },
         { excludeExtraneousValues: true },
       );
@@ -285,6 +308,7 @@ export class ProductQueryImplement implements ProductQuery {
         {
           ...i._source,
           thumbnailLink: i._source.thumbnailLink.url,
+          inStock: i._source.qty > 0 ? true : false,
         },
         { excludeExtraneousValues: true },
       );

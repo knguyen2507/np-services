@@ -5,6 +5,8 @@ export class FindProduct extends BaseQuery {
     offset: number;
     limit: number;
     searchName?: string;
+    searchType?: string;
+    searchValue?: string;
   };
 
   constructor(data: FindProduct) {
