@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { SearchModule } from 'libs/search/search.module';
 import { CaslModule } from '../libs/casl/casl.module';
 import { CloudinaryModule } from '../libs/cloudinary/cloudinary.module';
 import { GuardModule } from '../libs/guard/guard.module';
@@ -24,9 +23,8 @@ import { UserModule } from './user/user.module';
     BrandModule,
     CategoryModule,
     ProductModule,
-    SearchModule,
   ],
   controllers: [AppController],
   providers: [],
 })
-export class AppModule {}
+export class AppModule { }

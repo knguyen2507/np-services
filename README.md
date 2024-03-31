@@ -8,6 +8,24 @@ Generate Prisma Client
 prisma generate
 ```
 
+## File hosts
+
+Nhấn tổ hợp phím Windows + R
+
+Nhập lệnh
+
+```
+Nhập: C:\Windows\System32\Drivers\etc\hosts
+```
+
+Thêm các dòng vào file hosts:
+
+```
+127.0.0.1 store-elasticsearch
+127.0.0.1 store-redis
+127.0.0.1 store-mongodb
+```
+
 ## Chạy chương trình trên Local
 
 Chạy file docker-compose.yml tạo Docker Images

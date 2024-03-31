@@ -3,7 +3,6 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { CloudinaryModule } from 'libs/cloudinary/cloudinary.module';
 import { PrismaModule } from 'libs/prisma/prisma.module';
 import { RedisModule } from 'libs/redis/redis.module';
-import { SearchModule } from 'libs/search/search.module';
 import { CreateProductHandler } from './application/command/product/create/handler';
 import { DeleteProductHandler } from './application/command/product/delete/handler';
 import { UpdateProductHandler } from './application/command/product/update/handler';
@@ -47,8 +46,8 @@ const queries = [
 const domain = [ProductFactory];
 
 @Module({
-  imports: [CqrsModule, PrismaModule, CloudinaryModule, RedisModule, SearchModule],
+  imports: [CqrsModule, PrismaModule, CloudinaryModule, RedisModule],
   controllers: [ProductQueryController, ProductCommandController],
   providers: [...infrastructure, ...commands, ...queries, ...domain],
 })
-export class ProductModule {}
+export class ProductModule { }

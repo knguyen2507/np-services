@@ -1,12 +1,9 @@
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Global, Inject, Injectable, Module } from '@nestjs/common';
-import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { JwtModule, JwtService } from '@nestjs/jwt';
-import { Products } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { ObjectId } from 'bson';
 import { Cache } from 'cache-manager';
-import { SearchModule } from 'libs/search/search.module';
 import moment from 'moment';
 import { environment } from '../../src/environment';
 import { PrismaModule } from '../prisma/prisma.module';
@@ -22,8 +19,7 @@ export class UtilityImplement {
     @Inject(CACHE_MANAGER)
     private readonly redis: Cache,
     private readonly prisma: PrismaService,
-    private readonly elasticsearch: ElasticsearchService,
-  ) {}
+  ) { }
 
   generateId() {
     return new ObjectId().toString();
@@ -107,7 +103,6 @@ export class UtilityImplement {
     });
   }
 
-  // search for prisma mongodb
   buildSearch(item: any) {
     let value;
     if (item.valueType === 'text') {
@@ -130,70 +125,12 @@ export class UtilityImplement {
 
     return { value };
   }
-
-  // search for elasticsearch
-  buildSearch2(prop: string, item: any) {
-    let value;
-    if (item.valueType === 'text') {
-      value = {
-        query_string: {
-          query: `*${item.value}*`,
-          fields: [`${prop}`],
-        },
-      };
-    }
-    if (item.valueType === 'number') {
-      const obj = {};
-      obj[`${prop}`] = Number(item.value);
-      value = { match: obj };
-    }
-    if (item.valueType === 'date') {
-      const obj = {};
-      const fromDate = moment(item.fromDate).toDate();
-      const toDate = moment(item.toDate).toDate();
-      obj[`${prop}`] = { gte: fromDate, lte: toDate };
-      value = { range: obj };
-    }
-    if (item.valueType === 'set') {
-      const obj = {};
-      obj[`[${prop}]`] = Array.from(item.value);
-      value = { terms: obj };
-    }
-    if (item.valueType === 'boolean') {
-      const obj = {};
-      obj[`${prop}`] = item.value;
-      value = { term: obj };
-    }
-
-    return { value };
-  }
-
-  async indexProduct(product: Products): Promise<any> {
-    return this.elasticsearch.index<any>({
-      index: 'products',
-      body: {
-        id: product.id,
-        productCode: product.productCode,
-        name: product.name,
-        categoryId: product.categoryId,
-        brandId: product.brandId,
-        qty: product.qty,
-        purchase: product.purchase,
-        price: product.price,
-        thumbnailLink: product.thumbnailLink,
-        description: product.description,
-        images: product.images,
-        created: product.created,
-        updated: product.updated,
-      },
-    });
-  }
 }
 
 @Global()
 @Module({
-  imports: [JwtModule.register({}), RedisModule, PrismaModule, SearchModule],
+  imports: [JwtModule.register({}), RedisModule, PrismaModule],
   providers: [UtilityImplement],
   exports: [UtilityImplement],
 })
-export class UtilityModule {}
+export class UtilityModule { }

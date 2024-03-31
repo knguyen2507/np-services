@@ -1,10 +1,8 @@
 import { faker } from '@faker-js/faker';
 import { Inject, Injectable } from '@nestjs/common';
-import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { ObjectId } from 'bson';
 import moment from 'moment';
 import { PrismaService } from '../../prisma/prisma.service';
-import { ProductSearchModel } from '../../search/search.model';
 import { InitialUser1 } from '../../utility/const/initial';
 
 @Injectable()
@@ -12,8 +10,7 @@ export class SeedProductService {
   constructor(
     @Inject(PrismaService)
     private prisma: PrismaService,
-    private readonly elasticsearch: ElasticsearchService,
-  ) {}
+  ) { }
 
   seed = async () => {
     const products = await this.prisma.products.findFirst();
@@ -24,6 +21,7 @@ export class SeedProductService {
   };
 
   async createProduct() {
+    let operations: any[] = [];
     const [brands, categories] = await Promise.all([this.prisma.brands.findMany(), this.prisma.categories.findMany()]);
 
     for (let i = 1; i <= 1000; i++) {
@@ -49,9 +47,9 @@ export class SeedProductService {
       for (let i = 0; i < faker.number.int({ min: 2, max: 4 }); i++) {
         i === 0
           ? (description += `${faker.animal.bird()}-${i}:${faker.lorem.paragraphs({
-              min: 1,
-              max: 1,
-            })}`)
+            min: 1,
+            max: 1,
+          })}`)
           : (description += `*done*${faker.animal.bird()}-${i}:${faker.lorem.paragraphs({ min: 1, max: 1 })}`);
       }
 
@@ -79,30 +77,12 @@ export class SeedProductService {
         updated: [],
       };
 
-      await Promise.all([this.indexProduct({ ...data, brand, category }), this.prisma.products.create({ data })]);
+      operations = [
+        ...operations,
+        this.prisma.products.create({ data }),
+      ];
     }
-  }
 
-  async indexProduct(product: ProductSearchModel): Promise<any> {
-    return this.elasticsearch.index<any>({
-      index: 'products',
-      body: {
-        id: product.id,
-        productCode: product.productCode,
-        name: product.name,
-        categoryId: product.categoryId,
-        brand: product.brand,
-        brandId: product.brandId,
-        category: product.category,
-        qty: product.qty,
-        purchase: product.purchase,
-        price: product.price,
-        thumbnailLink: product.thumbnailLink,
-        description: product.description,
-        images: product.images,
-        created: product.created,
-        updated: product.updated,
-      },
-    });
+    await this.prisma.$transaction(operations);
   }
 }

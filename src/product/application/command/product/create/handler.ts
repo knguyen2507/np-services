@@ -12,7 +12,7 @@ export class CreateProductHandler implements ICommandHandler<CreateProduct, void
   constructor(
     private readonly util: UtilityImplement,
     private readonly cloudinaryService: CloudinaryService,
-  ) {}
+  ) { }
   @Inject()
   private readonly factory: ProductFactory;
   @Inject()
@@ -67,6 +67,6 @@ export class CreateProductHandler implements ICommandHandler<CreateProduct, void
       updated: [],
     });
 
-    await Promise.all([this.product.save(model), this.product.createSearch({ ...model, brand: null, category: null })]);
+    await this.product.save(model);
   }
 }
