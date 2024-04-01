@@ -11,6 +11,7 @@ volumes:
 services:
   store-mongodb:
     image: 'bitnami/mongodb:6.0.4-debian-11-r11'
+    restart: "no"
     container_name: store-mongodb
     ports:
       - 27017:27017
@@ -29,7 +30,7 @@ services:
 
   store-redis:
     image: redis:7.0.12
-    restart: always
+    restart: "no"
     container_name: store-redis
     ports:
       - 6379:6379
@@ -43,6 +44,7 @@ services:
 
   store-elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.12.2
+    restart: "no"
     container_name: store-elasticsearch
     ports:
       - '9200:9200'
