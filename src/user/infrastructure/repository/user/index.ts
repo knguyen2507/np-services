@@ -1,4 +1,4 @@
-import { Inject } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import { PrismaService } from '../../../../../libs/prisma/prisma.service';
 import { UserResult } from '../../../../../libs/utility/result/user.result';
@@ -30,6 +30,7 @@ export class UserRepositoryImplement implements UserRepository {
     const user = await this.prisma.users.findFirst({
       where: { username },
     });
+    if (!user) throw new HttpException('Sai tài khoản hoặc mật khẩu', HttpStatus.BAD_REQUEST);
     return plainToClass(
       UserResult,
       {

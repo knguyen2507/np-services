@@ -1,6 +1,6 @@
 import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiHeaders, ApiTags } from '@nestjs/swagger';
 import { AuthnGuard } from 'libs/guard/authentication/authn.guard';
 import { pathPrefixProduct, pathPrefixQueryProduct } from 'libs/utility/const/path.prefix';
 import {
@@ -41,6 +41,10 @@ export class ProductQueryController {
   @Get(pathPrefixQueryProduct.findProductListByAdmin)
   @UseGuards(AuthnGuard)
   @ApiBearerAuth()
+  @ApiHeaders([
+    { name: 'x-custom-timestamp', description: 'timestamp' },
+    { name: 'x-custom-nonce', description: 'nonce' },
+  ])
   async FindProductListByAdmin(@Query() query: FindProductByAdminRequestDTO): Promise<any> {
     const msg = {
       messageId: this.util.generateId(),
@@ -73,6 +77,10 @@ export class ProductQueryController {
   @Get(pathPrefixQueryProduct.findProductById)
   @UseGuards(AuthnGuard)
   @ApiBearerAuth()
+  @ApiHeaders([
+    { name: 'x-custom-timestamp', description: 'timestamp' },
+    { name: 'x-custom-nonce', description: 'nonce' },
+  ])
   async FindProductById(@Query() query: FindProductByIdRequestDTO): Promise<any> {
     const msg = {
       messageId: this.util.generateId(),
@@ -155,6 +163,10 @@ export class ProductQueryController {
   @Get(pathPrefixQueryProduct.getTotalProduct)
   @UseGuards(AuthnGuard)
   @ApiBearerAuth()
+  @ApiHeaders([
+    { name: 'x-custom-timestamp', description: 'timestamp' },
+    { name: 'x-custom-nonce', description: 'nonce' },
+  ])
   async GetTotalProduct(): Promise<any> {
     const msg = {
       messageId: this.util.generateId(),
