@@ -10,7 +10,7 @@ export class SeedProductService {
   constructor(
     @Inject(PrismaService)
     private prisma: PrismaService,
-  ) { }
+  ) {}
 
   seed = async () => {
     const products = await this.prisma.products.findFirst();
@@ -47,9 +47,9 @@ export class SeedProductService {
       for (let i = 0; i < faker.number.int({ min: 2, max: 4 }); i++) {
         i === 0
           ? (description += `${faker.animal.bird()}-${i}:${faker.lorem.paragraphs({
-            min: 1,
-            max: 1,
-          })}`)
+              min: 1,
+              max: 1,
+            })}`)
           : (description += `*done*${faker.animal.bird()}-${i}:${faker.lorem.paragraphs({ min: 1, max: 1 })}`);
       }
 
@@ -77,10 +77,7 @@ export class SeedProductService {
         updated: [],
       };
 
-      operations = [
-        ...operations,
-        this.prisma.products.create({ data }),
-      ];
+      operations = [...operations, this.prisma.products.create({ data })];
     }
 
     await this.prisma.$transaction(operations);

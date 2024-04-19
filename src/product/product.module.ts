@@ -50,4 +50,4 @@ const domain = [ProductFactory];
   controllers: [ProductQueryController, ProductCommandController],
   providers: [...infrastructure, ...commands, ...queries, ...domain],
 })
-export class ProductModule { }
+export class ProductModule {}
