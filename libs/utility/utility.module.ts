@@ -19,7 +19,7 @@ export class UtilityImplement {
     @Inject(CACHE_MANAGER)
     private readonly redis: Cache,
     private readonly prisma: PrismaService,
-  ) { }
+  ) {}
 
   generateId() {
     return new ObjectId().toString();
@@ -133,4 +133,4 @@ export class UtilityImplement {
   providers: [UtilityImplement],
   exports: [UtilityImplement],
 })
-export class UtilityModule { }
+export class UtilityModule {}
