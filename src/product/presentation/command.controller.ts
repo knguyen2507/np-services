@@ -1,7 +1,7 @@
 import { Body, Controller, Post, Req, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
-import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiConsumes, ApiHeaders, ApiTags } from '@nestjs/swagger';
 import { AuthnGuard } from 'libs/guard/authentication/authn.guard';
 import { pathPrefixCommandProduct, pathPrefixProduct } from 'libs/utility/const/path.prefix';
 import { DeleteProductResquestDTO } from 'libs/utility/dto';
@@ -14,6 +14,10 @@ import { UpdateProduct } from '../application/command/product/update';
 
 @ApiTags(pathPrefixProduct.swagger)
 @Controller(pathPrefixProduct.controller)
+@ApiHeaders([
+  { name: 'x-custom-timestamp', description: 'timestamp' },
+  { name: 'x-custom-nonce', description: 'nonce' },
+])
 @UseGuards(AuthnGuard)
 @ApiBearerAuth()
 export class ProductCommandController {

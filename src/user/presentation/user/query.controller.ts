@@ -1,6 +1,6 @@
 import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiHeaders, ApiTags } from '@nestjs/swagger';
 import { AuthnGuard } from '../../../../libs/guard/authentication/authn.guard';
 import { pathPrefixQueryUser, pathPrefixUser } from '../../../../libs/utility/const/path.prefix';
 import { RequestWithUser } from '../../../../libs/utility/interface/request.interface';
@@ -18,6 +18,10 @@ import { VerifyAccessTokenResult } from '../../application/query/user/verify-tok
 
 @ApiTags(pathPrefixUser.swagger)
 @Controller(pathPrefixUser.controller)
+@ApiHeaders([
+  { name: 'x-custom-timestamp', description: 'timestamp' },
+  { name: 'x-custom-nonce', description: 'nonce' },
+])
 @UseGuards(AuthnGuard)
 @ApiBearerAuth()
 export class UserQueryController {

@@ -1,6 +1,6 @@
 import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiHeaders, ApiTags } from '@nestjs/swagger';
 import { AuthnGuard } from 'libs/guard/authentication/authn.guard';
 import { pathPrefixBrand, pathPrefixQueryBrand } from 'libs/utility/const/path.prefix';
 import { FindBrandByCodeRequestDTO, FindBrandByIdRequestDTO } from 'libs/utility/dto';
@@ -49,6 +49,10 @@ export class BrandQueryController {
   }
 
   @Get(pathPrefixQueryBrand.getTotalBrand)
+  @ApiHeaders([
+    { name: 'x-custom-timestamp', description: 'timestamp' },
+    { name: 'x-custom-nonce', description: 'nonce' },
+  ])
   @UseGuards(AuthnGuard)
   @ApiBearerAuth()
   async GetTotalBrand(): Promise<any> {

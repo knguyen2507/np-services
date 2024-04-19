@@ -1,6 +1,6 @@
 import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiHeaders, ApiTags } from '@nestjs/swagger';
 import { AuthnGuard } from 'libs/guard/authentication/authn.guard';
 import { pathPrefixCategory, pathPrefixQueryCategory } from 'libs/utility/const/path.prefix';
 import { FindCategoryByCodeRequestDTO, FindCategoryByIdRequestDTO } from 'libs/utility/dto';
@@ -49,6 +49,10 @@ export class CategoryQueryController {
   }
 
   @Get(pathPrefixQueryCategory.getTotalCategory)
+  @ApiHeaders([
+    { name: 'x-custom-timestamp', description: 'timestamp' },
+    { name: 'x-custom-nonce', description: 'nonce' },
+  ])
   @UseGuards(AuthnGuard)
   @ApiBearerAuth()
   async GetTotalCategory(): Promise<any> {

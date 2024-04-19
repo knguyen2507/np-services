@@ -1,6 +1,6 @@
 import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common/decorators';
 import { CommandBus } from '@nestjs/cqrs';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiHeaders, ApiTags } from '@nestjs/swagger';
 import { AuthnGuard } from 'libs/guard/authentication/authn.guard';
 import { pathPrefixCategory, pathPrefixCommandCategory } from 'libs/utility/const/path.prefix';
 import { CreateCategoryResquestDTO } from 'libs/utility/dto';
@@ -10,6 +10,10 @@ import { CreateCategory } from '../application/command/category/create';
 
 @ApiTags(pathPrefixCategory.swagger)
 @Controller(pathPrefixCategory.controller)
+@ApiHeaders([
+  { name: 'x-custom-timestamp', description: 'timestamp' },
+  { name: 'x-custom-nonce', description: 'nonce' },
+])
 @UseGuards(AuthnGuard)
 @ApiBearerAuth()
 export class CategoryCommandController {

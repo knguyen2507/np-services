@@ -39,12 +39,12 @@ export class ProductQueryController {
   ) {}
 
   @Get(pathPrefixQueryProduct.findProductListByAdmin)
-  @UseGuards(AuthnGuard)
-  @ApiBearerAuth()
   @ApiHeaders([
     { name: 'x-custom-timestamp', description: 'timestamp' },
     { name: 'x-custom-nonce', description: 'nonce' },
   ])
+  @UseGuards(AuthnGuard)
+  @ApiBearerAuth()
   async FindProductListByAdmin(@Query() query: FindProductByAdminRequestDTO): Promise<any> {
     const msg = {
       messageId: this.util.generateId(),
@@ -75,12 +75,12 @@ export class ProductQueryController {
   }
 
   @Get(pathPrefixQueryProduct.findProductById)
-  @UseGuards(AuthnGuard)
-  @ApiBearerAuth()
   @ApiHeaders([
     { name: 'x-custom-timestamp', description: 'timestamp' },
     { name: 'x-custom-nonce', description: 'nonce' },
   ])
+  @UseGuards(AuthnGuard)
+  @ApiBearerAuth()
   async FindProductById(@Query() query: FindProductByIdRequestDTO): Promise<any> {
     const msg = {
       messageId: this.util.generateId(),
@@ -161,12 +161,12 @@ export class ProductQueryController {
   }
 
   @Get(pathPrefixQueryProduct.getTotalProduct)
-  @UseGuards(AuthnGuard)
-  @ApiBearerAuth()
   @ApiHeaders([
     { name: 'x-custom-timestamp', description: 'timestamp' },
     { name: 'x-custom-nonce', description: 'nonce' },
   ])
+  @UseGuards(AuthnGuard)
+  @ApiBearerAuth()
   async GetTotalProduct(): Promise<any> {
     const msg = {
       messageId: this.util.generateId(),

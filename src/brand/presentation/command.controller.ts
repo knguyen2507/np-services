@@ -1,6 +1,6 @@
 import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiHeaders, ApiTags } from '@nestjs/swagger';
 import { AuthnGuard } from 'libs/guard/authentication/authn.guard';
 import { pathPrefixBrand, pathPrefixCommandBrand } from 'libs/utility/const/path.prefix';
 import { CreateBrandResquestDTO } from 'libs/utility/dto';
@@ -10,6 +10,10 @@ import { CreateBrand } from '../application/command/brand/create';
 
 @ApiTags(pathPrefixBrand.swagger)
 @Controller(pathPrefixBrand.controller)
+@ApiHeaders([
+  { name: 'x-custom-timestamp', description: 'timestamp' },
+  { name: 'x-custom-nonce', description: 'nonce' },
+])
 @UseGuards(AuthnGuard)
 export class BrandCommandController {
   constructor(

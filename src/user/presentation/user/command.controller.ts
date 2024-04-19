@@ -1,6 +1,6 @@
 import { Body, Controller, HttpCode, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiHeaders, ApiTags } from '@nestjs/swagger';
 import { AuthnGuard } from '../../../../libs/guard/authentication/authn.guard';
 import { pathPrefixCommandUser, pathPrefixUser } from '../../../../libs/utility/const/path.prefix';
 import { CreateUserRequestDTO, LoginRequestDTO, UpdatePasswordRequestDTO } from '../../../../libs/utility/dto';
@@ -20,6 +20,10 @@ export class UserCommandController {
   ) {}
 
   @Post(pathPrefixCommandUser.createUser)
+  @ApiHeaders([
+    { name: 'x-custom-timestamp', description: 'timestamp' },
+    { name: 'x-custom-nonce', description: 'nonce' },
+  ])
   @UseGuards(AuthnGuard)
   @ApiBearerAuth()
   async CreateUser(@Body() body: CreateUserRequestDTO): Promise<void> {
@@ -43,6 +47,10 @@ export class UserCommandController {
   }
 
   @Post(pathPrefixCommandUser.updatePassword)
+  @ApiHeaders([
+    { name: 'x-custom-timestamp', description: 'timestamp' },
+    { name: 'x-custom-nonce', description: 'nonce' },
+  ])
   @UseGuards(AuthnGuard)
   @ApiBearerAuth()
   async UpdatePassword(@Body() body: UpdatePasswordRequestDTO, @Res() res: RequestWithUser): Promise<any> {
@@ -55,6 +63,10 @@ export class UserCommandController {
   }
 
   @Post('/logout')
+  @ApiHeaders([
+    { name: 'x-custom-timestamp', description: 'timestamp' },
+    { name: 'x-custom-nonce', description: 'nonce' },
+  ])
   @UseGuards(AuthnGuard)
   @ApiBearerAuth()
   async Logout(@Req() request: RequestWithUser): Promise<any> {
