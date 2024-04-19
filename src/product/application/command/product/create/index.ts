@@ -4,6 +4,7 @@ import { BaseCommand } from '../../base';
 
 export class CreateProduct extends BaseCommand {
   data: {
+    readonly id: string | null;
     readonly productCode: string;
     readonly name: string;
     readonly categoryId: string;

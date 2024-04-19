@@ -12,15 +12,15 @@ export class CreateProductHandler implements ICommandHandler<CreateProduct, void
   constructor(
     private readonly util: UtilityImplement,
     private readonly cloudinaryService: CloudinaryService,
-  ) { }
+  ) {}
   @Inject()
   private readonly factory: ProductFactory;
   @Inject()
   private readonly product: ProductRepositoryImplement;
 
   async execute(command: CreateProduct): Promise<void> {
-    const id = this.util.generateId();
-    const { main, files, user, ...data } = command.data;
+    const { id, main, files, user, ...data } = command.data;
+    const uuid = id ? id : this.util.generateId();
     const created = {
       id: user.id,
       username: user.username,
@@ -62,7 +62,7 @@ export class CreateProductHandler implements ICommandHandler<CreateProduct, void
       ...data,
       thumbnailLink,
       images: upload,
-      id,
+      id: uuid,
       created,
       updated: [],
     });

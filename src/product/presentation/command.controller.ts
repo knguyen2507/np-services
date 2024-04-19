@@ -46,6 +46,7 @@ export class ProductCommandController {
     const msg = {
       messageId: this.util.generateId(),
       data: {
+        id: data.id ? data.id : null,
         productCode: data.productCode,
         name: data.name,
         categoryId: data.categoryId,
